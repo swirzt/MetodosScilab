@@ -10,6 +10,7 @@ function x = TriangularSuperior(A,b)
     elseif mA<>nb then
     error('Error - dimensiones incompatibles entre A y b')
     abort
+    end
 
     t = size(A)
     t = t(1)
@@ -33,6 +34,7 @@ function x = TriangularInferior(A,b)
     elseif mA<>nb then
     error('Error - dimensiones incompatibles entre A y b')
     abort
+    end
 
     x(1) = b(1) / A(1,1) 
     tamano = size(A)
@@ -141,8 +143,8 @@ P = eye(n,n)
 for k=1:n-1
     [v,i]=max(abs(a(k:n,k)))
     kpivot = k-1+i
-    temp = a(kpivot,:) a(kpivot,:) = a(k,:) a(k,:) = temp
-    temp = P(kpivot,:) P(kpivot,:) = P(k,:) P(k,:) = temp
+    temp = a(kpivot,:); a(kpivot,:) = a(k,:); a(k,:) = temp
+    temp = P(kpivot,:); P(kpivot,:) = P(k,:); P(k,:) = temp
     for i=k+1:n
         for j=k+1:n+1
             a(i,j) = a(i,j) - a(k,j)*a(i,k)/a(k,k)

@@ -84,6 +84,7 @@ function x = RegulaFalsi(f,a,b)
         else
             a = c
         c = b - f(b)*(b-a)/(f(b)-f(a))
+        end
     end
     x = c
 endfunction
