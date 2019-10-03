@@ -1,2 +1,2 @@
 # MetodosScilab
-Metodos by Gurvich-Wirzt
+Métodos by Gurvich-Wirzt
