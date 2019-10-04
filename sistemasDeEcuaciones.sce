@@ -3,15 +3,6 @@
 // TriangularSuperior : Matriz Vector -> Vector
 // Recibe matriz A triangular superior sin 0 en su diagonal
 function x = TriangularSuperior(A,b)
-
-    if nA<>mA then
-    error('Error - La matriz A debe ser cuadrada')
-    abort
-    elseif mA<>nb then
-    error('Error - dimensiones incompatibles entre A y b')
-    abort
-    end
-
     t = size(A)
     t = t(1)
     x(t) = b(t) / A(t,t) 
@@ -27,15 +18,6 @@ endfunction
 // TriangularInferior : Matriz Vector -> Vector
 // Recibe matriz A triangular inferior sin 0 en su diagonal
 function x = TriangularInferior(A,b)
-
-    if nA<>mA then
-    error('Error - La matriz A debe ser cuadrada')
-    abort
-    elseif mA<>nb then
-    error('Error - dimensiones incompatibles entre A y b')
-    abort
-    end
-
     x(1) = b(1) / A(1,1) 
     tamano = size(A)
     for i = 2:(tamano(1))
@@ -232,5 +214,14 @@ for k = 1:n
     end
 end
 ind = 1
+endfunction
 
+function x = resuelveCholesky(A,b)
+    [U,ind] = cholesky(A)
+    if ind == 1 then
+        y = TriangularInferior(U',b)
+        x = TriangularSuperior(U,y)
+    else 
+        x = %nan
+    end
 endfunction
