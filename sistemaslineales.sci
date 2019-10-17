@@ -1,4 +1,6 @@
-function y = jacobi(A,b,x,eps)
+//Metodo de Jacobi iterativo
+//Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion y una tolerancia
+function y = jacobiItera(A,b,x,eps)
     [nA,mA] = size(A)
     I = eye(nA,mA)
     for k=1:nA-1
@@ -16,30 +18,75 @@ function y = jacobi(A,b,x,eps)
     n(3) = norm(Norma, 'fro')
     n(4) = norm(Norma)
     if min(n) >= 1 then
-        if max(abs(spec(A))) > = 1
-            disp("La solucion no converge para todo punto inicial") 
+        if max(abs(spec(Norma))) > = 1
+            disp("La solucion no converge para todo punto inicial")
+            y = %nan
+            abort
         end
     end
-    contador = 0
-        while(norm(A*x-b) > eps)
-            xAnt = x
+    y = x //Primera iteracion
+    for i = 1:nA
+        x(i) = b(i)
+        suma = 0
+        for j = 1:nA
+            if j <> i then
+                suma = suma + A(i,j)*y(j)
+            end
+        end
+        x(i) = (x(i) - suma)/ A(i,i)
+   end
+end
+      while(norm(x-y) > eps) //Comienzo el bucle
+            y = x
             for i = 1:nA
                 x(i) = b(i)
                 suma = 0
                 for j = 1:nA
                     if j <> i then
-                        suma = suma + A(i,j)*xAnt(j)
+                        suma = suma + A(i,j)*y(j)
                     end
                 end
                 x(i) = (x(i) - suma)/ A(i,i)
-            end 
-            contador = contador+1
+            end
         end
     y = x
-    disp(contador)
 endfunction
-
-function y = gauseidel(A,b,x,eps)
+//Metodo de Jacobi matricial
+//Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion y una tolerancia
+//La matriz N es la matriz diagonal formada por la diagonal de A
+function y = jacobiMat(A,b,x,eps)
+    [nA,mA] = size(A)
+    I = eye(nA,mA)
+    for k=1:nA-1
+        [v,i]=max(abs(A(k:nA,k)))
+            kpivot = k-1+i
+            temp = A(kpivot,:); A(kpivot,:) = A(k,:); A(k,:) = temp
+            temp = b(kpivot,:); b(kpivot,:) = b(k,:); b(k,:) = temp
+            temp = x(kpivot,:); x(kpivot,:) = x(k,:); x(k,:) = temp
+        end
+    N = diag(diag(A))
+    inversaN = inversa(N)
+    Norma = I-inversaN*A
+    n(1) = norm(Norma, 1)
+    n(2) = norm(Norma, 'inf')
+    n(3) = norm(Norma, 'fro')
+    n(4) = norm(Norma)
+    if min(n) >= 1 then
+        if max(abs(spec(Norma))) > = 1
+            disp("La solucion no converge para todo punto inicial")
+            y = %nan
+            abort
+        end
+    end
+    y = Norma*x+inversaN*b //Hago la primer iteracion con la matriz del metodo para comparar
+    while(norm(y-x) > eps) then //Actualizo el vector solucion
+      x = y
+      y = Norma*x+inversaN*b
+    end
+endfunction
+//Metodo de Gauss Seidel iterativo
+//Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion y una tolerancia
+function y = gauseidelItera(A,b,x,eps)
     [nA,mA] = size(A)
     if diagonalDominante(A) == 0 then
         I = eye(nA,mA)
@@ -63,31 +110,82 @@ function y = gauseidel(A,b,x,eps)
         n(3) = norm(Norma, 'fro')
         n(4) = norm(Norma)
         if min(n) >= 1 then
-            if max(abs(spec(A))) > = 1
-                disp("La solucion no converge para todo punto inicial") 
+            if max(abs(spec(Norma))) > = 1
+                disp("La solucion no converge para todo punto inicial")
+                y = %nan
+                abort
             end
         end
-    end
-    contador = 0
-    while(norm(A*x-b) > eps)
-         for i = 1:nA
-            for i = 1:nA
-                x(i) = b(i)
-                suma = 0
-                for j = 1:nA
-                    if j <> i then
-                        suma = suma + A(i,j)*x(j)
-                    end
-                end
-                x(i) = (x(i) - suma)/ A(i,i)
-            end 
+   end
+   y = x
+   for i = 1:nA //Primera iteracion
+      x(i) = b(i)
+      suma = 0
+      for j = 1:nA
+         if j <> i then
+            suma = suma + A(i,j)*x(j)
          end
-         contador = contador+1
-     end
-     y=x
-     disp(contador)
+      end
+      x(i) = (x(i) - suma)/ A(i,i)
+   end
+   while(norm(x-y) > eps) //Comienzo el bucle
+      y = x
+      for i = 1:nA
+         x(i) = b(i)
+         suma = 0
+         for j = 1:nA
+            if j <> i then
+               suma = suma + A(i,j)*x(j)
+            end
+         end
+         x(i) = (x(i) - suma)/ A(i,i)
+      end
+   end
+   y=x
 endfunction
 
+//Metodo de Gauss Seidel matricial
+//Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion y una tolerancia
+//La matriz N es la triangular inferior de A
+function y = gauseidelMat(A,b,x,eps)
+    [nA,mA] = size(A)
+    if diagonalDominante(A) == 0 then
+        I = eye(nA,mA)
+        for k=1:nA-1
+            [v,i]=max(abs(A(k:nA,k)))
+                kpivot = k-1+i
+                temp = A(kpivot,:); A(kpivot,:) = A(k,:); A(k,:) = temp
+                temp = b(kpivot,:); b(kpivot,:) = b(k,:); b(k,:) = temp
+                temp = x(kpivot,:); x(kpivot,:) = x(k,:); x(k,:) = temp
+            end
+        N = A
+        for i = 1:nA-1
+            for j = i+1:nA
+                N(i,j) = 0
+            end
+        end
+        inversaN = inversa(N)
+        Norma = I-inversaN*A
+        n(1) = norm(Norma, 1)
+        n(2) = norm(Norma, 'inf')
+        n(3) = norm(Norma, 'fro')
+        n(4) = norm(Norma)
+        if min(n) >= 1 then
+            if max(abs(spec(Norma))) > = 1
+                disp("La solucion no converge para todo punto inicial")
+                y = %nan
+                abort
+            end
+        end
+   end
+   y = Norma*x+inversaN*b //Hago la primer iteracion con la matriz del metodo para comparar
+   while(norm(y-x) > eps) then //Actualizo el vector solucion
+     x = y
+     y = Norma*x+inversaN*b
+   end
+endfunction
+
+//Chequea si una matriz es diagonal dominante
 function x =diagonalDominante(A)
     [nA,mA] = size(A)
     for i = 1:nA
@@ -100,11 +198,12 @@ function x =diagonalDominante(A)
         if suma >= abs(A(i,i))
             x = 0
             return
-        end 
+        end
     end
     x = 1
 endfunction
 
+//Calcula la inversa de la matriz A, usando eliminacion gaussiana
 function x = inversa(A)
     [nA,mA] = size(A)
     if nA<>mA then
@@ -116,11 +215,11 @@ function x = inversa(A)
 endfunction
 
 function [x,a] = gausselim(A,b)
-// Esta función obtiene la solución del sistema de ecuaciones lineales A*x=b, 
+// Esta función obtiene la solución del sistema de ecuaciones lineales A*x=b,
 // dadas las matrices de coeficientes A y b.
-// La función implementa el método de Eliminación Gaussiana sin pivoteo.  
+// La función implementa el método de Eliminación Gaussiana sin pivoteo.
 
-[nA,mA] = size(A) 
+[nA,mA] = size(A)
 [nb,mb] = size(b)
 
 if nA<>mA then
@@ -141,10 +240,10 @@ for i = 1:(nA-1)
     end
 end
 for k = 1: mb
-    x(nA,k) = a(nA,nA+k)/a(nA,nA) 
+    x(nA,k) = a(nA,nA+k)/a(nA,nA)
     for i = (nA-1):-1:1
         suma = 0
-        for j = i+1:nA 
+        for j = i+1:nA
             suma = suma + a(i,j)*x(j,k)
 
         end
@@ -152,4 +251,68 @@ for k = 1: mb
     end
     end
 
+endfunction
+
+//Metodo de sobrerelajacion general
+//Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion,
+//un factor de escala y una tolerancia
+function y = sobrerelajacion(A,b,x,w,eps)
+   //TODO: preguntar si hay condiciones de corte previas
+   y = x //Primera iteracion
+   for i = 1:nA
+      x(i) = b(i)
+      suma = 0
+      for j = 1:nA
+         if j <> i then
+            suma = suma + A(i,j)*x(j)
+         end
+      end
+      x(i) = (1-w)*y(i)+(w/A(i,i))*((x(i) - suma)/ A(i,i))
+   end
+   while(norm(x-y) > eps) //Comienzo el bucle
+      y = x
+      for i = 1:nA
+         x(i) = b(i)
+         suma = 0
+         for j = 1:nA
+            if j <> i then
+               suma = suma + A(i,j)*x(j)
+            end
+         end
+         x(i) = (1-w)*y(i)+(w/A(i,i))*((x(i) - suma)/ A(i,i))
+      end
+   end
+endfunction
+
+//Metodo de sobrerelajacion para sistemas tridiagonales
+//Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion y una tolerancia
+//Calcula el factor de escala en base a la norma espectral de la matriz A
+function y = sobrerelajacionTri(A,b,x,eps)
+   //TODO: preguntar si hay condiciones de corte previas
+   normaEspectral = max(abs(spec(A)))
+   w = 2 / (1 + sqrt(1 + normaEspectral^2))
+   y = x //Primera iteracion
+   for i = 1:nA
+      x(i) = b(i)
+      suma = 0
+      for j = 1:nA
+         if j <> i then
+            suma = suma + A(i,j)*x(j)
+         end
+      end
+      x(i) = (1-w)*y(i)+(w/A(i,i))*((x(i) - suma)/ A(i,i))
+   end
+   while(norm(x-y) > eps) //Comienzo el bucle
+      y = x
+      for i = 1:nA
+         x(i) = b(i)
+         suma = 0
+         for j = 1:nA
+            if j <> i then
+               suma = suma + A(i,j)*x(j)
+            end
+         end
+         x(i) = (1-w)*y(i)+(w/A(i,i))*((x(i) - suma)/ A(i,i))
+      end
+   end
 endfunction
