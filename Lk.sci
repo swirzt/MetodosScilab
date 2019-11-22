@@ -41,3 +41,22 @@ function z = interpolNewton(x,y)
         z = z + dif
     end
 endfunction
+
+function z = minimosCuadrados(x,y,n)
+    //Ejecutar con sistemasDeEcuaciones.sce
+    [Xm,Xn] = size(x)
+    y = y'
+    A = zeros(Xn,n)
+    for i = 1:Xn
+        for j = 1: n
+            A (i,j) = x(i) ^ (j-1)
+        end
+    end
+    nuevo = A' * A
+    disp(nuevo)
+    a = inversa(nuevo)*A'
+    disp(a)
+        a = a*y
+    pol = poly(a, "x", "coeff")
+    z = pol
+endfunction
