@@ -132,7 +132,7 @@ for k=1:n-1
             a(i,j) = a(i,j) - a(k,j)*a(i,k)/a(k,k)
         end
         for j=1:k        // no hace falta para calcular la solución x
-            a(i,j) = 0  // no hace falta para calcular la solución x
+            a(i,j) = 0   // no hace falta para calcular la solución x
         end              // no hace falta para calcular la solución x
     end
 end

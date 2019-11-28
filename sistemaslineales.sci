@@ -51,6 +51,7 @@ end
         end
     y = x
 endfunction
+
 //Metodo de Jacobi matricial
 //Recibe la matriz del sistema, el vector solucion, una aproximacion de la solucion y una tolerancia
 //La matriz N es la matriz diagonal formada por la diagonal de A
@@ -290,7 +291,7 @@ endfunction
 function y = sobrerelajacionTri(A,b,x,eps)
    //TODO: preguntar si hay condiciones de corte previas
    normaEspectral = max(abs(spec(A)))
-   w = 2 / (1 + sqrt(1 + normaEspectral^2))
+   w = 2 / (1 + sqrt(1 - normaEspectral^2))
    y = x //Primera iteracion
    for i = 1:nA
       x(i) = b(i)

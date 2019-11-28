@@ -1,4 +1,5 @@
 function [x,p] = metodoPotencia(A,z)
+    if A == A' then
     z0 = z 
     w1 = A * z0
     z1 = w1 / norm(w1,'inf')
@@ -26,4 +27,7 @@ function [x,p] = metodoPotencia(A,z)
         p = p+1
     end
     x = l3
+else 
+    x = %nan
+    end
 endfunction
