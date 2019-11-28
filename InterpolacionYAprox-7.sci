@@ -60,3 +60,13 @@ function z = minimosCuadrados(x,y,n)
     pol = poly(a, "x", "coeff")
     z = pol
 endfunction
+
+function y =Chebyshev(n)
+    t(1) = 1
+    t(2) = poly([0],"x","r")
+    for i = 3:n+1
+        t(i) = poly([0 2], "x", "coeff")*t(i-1)-t(i-2) 
+    end
+    y = t(n+1)
+endfunction
+
