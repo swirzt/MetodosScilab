@@ -2,7 +2,7 @@ function c = circ(r,x,y)
     rect = [x-r,y-r,x+r,y+r]
     p = 0
     xgrid(1)
-    plot2d(p,"031",rect=rect)
+    plot2d(p,rect=rect)
     xarc(x-r,y+r,r*2,r*2,0,360*64)
     c = 0
 endfunction
@@ -100,6 +100,6 @@ function [x,p] = metodoPotencia(A,z)
     end
     x = l3
 else 
-    x = %nan
+   x = %nan
 end
 endfunction

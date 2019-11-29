@@ -27,7 +27,7 @@ endfunction
 // Trapecio para f de 2 variables con y fijo
 function y = trapecioCompDobley(f,yi,a,b,n)
     h = (b-a)/n
-    contador = f(a,yi)*1/2 + f(b,yi|)*1/2
+    contador = f(a,yi)*1/2 + f(b,yi)*1/2
     for j = 1:n-1
         contador = contador + f(a+j*h,yi) 
     end

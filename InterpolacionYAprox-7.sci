@@ -61,12 +61,21 @@ function z = minimosCuadrados(x,y,n)
     z = pol
 endfunction
 
-function y =Chebyshev(n)
+// Recibe un numero n
+// Devuelve el polinomio de chebyshev de ese grado con sus raíces
+function [y,x] = Chebyshev(n)
     t(1) = 1
     t(2) = poly([0],"x","r")
     for i = 3:n+1
         t(i) = poly([0 2], "x", "coeff")*t(i-1)-t(i-2) 
     end
     y = t(n+1)
+    x = roots(y)
 endfunction
 
+function y = NodosChebyshev(n,a,b)
+    [pol,r] = Chebyshev(n)
+    for i = 1 : n
+        y(i) = ((b+a) + r(i) * (b - a))/2
+    end
+endfunction
